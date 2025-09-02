@@ -40,7 +40,7 @@
 
 # DESIGN_CONFIG=./designs/sky130hd/aes/config.mk
 # DESIGN_CONFIG=./designs/sky130hd/chameleon/config.mk
-# DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk
+DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk
 # DESIGN_CONFIG=./designs/sky130hd/ibex/config.mk
 # DESIGN_CONFIG=./designs/sky130hd/jpeg/config.mk
 # DESIGN_CONFIG=./designs/sky130hd/microwatt/config.mk
@@ -83,7 +83,7 @@
 #DESIGN_CONFIG=./designs/ihp-sg13g2/i2c-gpio-expander/config.mk
 
 # Default design
-DESIGN_CONFIG ?= ./designs/nangate45/gcd/config.mk
+# DESIGN_CONFIG ?= ./designs/nangate45/gcd/config.mk
 export DESIGN_CONFIG
 include $(DESIGN_CONFIG)
 

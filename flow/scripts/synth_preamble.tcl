@@ -158,3 +158,30 @@ proc convert_liberty_areas { } {
     rtlil::set_attr -mod -uint $box gate_cost_equivalent $gate_eq
   }
 }
+
+# Connect the clk_2 input to the second DFF cell in the pair
+proc connect_clk_2 {} {
+    # Find all cells with a name ending in custom_FF_replace_2
+    # Refer to this GitHub PR for more information on how to get the output of a Yosys command into a
+    # Tcl variable: https://github.com/YosysHQ/yosys/pull/3349
+    tee -q -s cells_to_update_scratchpad select -list c:*custom_FF_replace_2*
+    set cells_to_update [scratchpad -copy cells_to_update_scratchpad result.string]
+    set cells_to_update [split $cells_to_update \n]
+
+    # Remove empty element
+    set index [lsearch $cells_to_update ""]
+    set cells_to_update [lreplace $cells_to_update $index $index]
+    set DFF_list [list]
+
+    # Remove the name of the top module from the names of the cells
+    foreach cell $cells_to_update {
+        # How to create a substring: Inspired by this StackOverflow answer:
+        # https://stackoverflow.com/a/15924092
+        lappend DFF_list [string range $cell [expr {[string first "/" $cell]} + 1] end]
+    }
+
+    # Connect clk_2 to the clock port of each cell
+    foreach cell $DFF_list {
+        connect -port $cell C clk_2
+    }
+}

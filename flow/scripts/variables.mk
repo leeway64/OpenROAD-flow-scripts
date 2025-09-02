@@ -164,7 +164,7 @@ export WRAP_CFG = $(PLATFORM_DIR)/wrapper.cfg
 export TCLLIBPATH := util/cell-veneer $(TCLLIBPATH)
 
 export SYNTH_SCRIPT ?= $(SCRIPTS_DIR)/synth.tcl
-export TWO_PHASE_CLK_SYNTH_SCRIPT ?= $(SCRIPTS_DIR)/two_phase_clocking_synth.tcl
+export TWO_PHASE_CLK_SYNTH_SCRIPT ?= $(SCRIPTS_DIR)/two_phase_clk_synth.tcl
 
 export SDC_FILE_CLOCK_PERIOD = $(RESULTS_DIR)/clock_period.txt
 

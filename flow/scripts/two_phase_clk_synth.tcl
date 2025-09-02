@@ -58,6 +58,13 @@ if { ![env_var_equals SYNTH_HIERARCHICAL 1] } {
   synth -flatten -run coarse:fine {*}$synth_full_args
 }
 
+puts "Duplicate each flip-flop"
+techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
+
+puts "Connect the clk_2 input to the appropriate cells"
+connect_clk_2
+write_verilog -noexpr -noattr post_duplication.v
+
 json -o $::env(RESULTS_DIR)/mem.json
 # Run report and check here so as to fail early if this synthesis run is doomed
 exec -- $::env(PYTHON_EXE) $::env(SCRIPTS_DIR)/mem_dump.py \
@@ -136,6 +143,15 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
   log_cmd abc_new {*}$abc_args
   delete {t:$specify*}
 }
+
+puts "Replace each DFF with a corresponding latch"
+techmap -map $::env(DFF_TO_LATCH_MAP_FILE)
+opt -full
+
+puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
+techmap
+log_cmd abc {*}$abc_args
+
 
 # Splitting nets resolves unwanted compound assign statements in
 # netlist (assign {..} = {..})
