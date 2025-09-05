@@ -73,7 +73,6 @@ if { [env_var_exists_and_non_empty SYNTH_RETIME_MODULES] } {
   select -clear
 }
 
-write_verilog -noexpr -noattr pre_duplication.v
 
 if {
   [env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] ||
@@ -101,9 +100,6 @@ techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
 puts "Connect the clk_2 input to the appropriate cells"
 connect_clk_2
 
-write_verilog -noexpr -noattr post_duplication.v
-
-write_verilog -noexpr -noattr pre_retiming.v
 design -save pre_retiming
 
 abc -keepff -dff -script "+strash; zero; &get -n; print_latch; &fraig -x; &put; scorr; dc2; dretime; retime -M 4 -s -D 1 -o -v; strash; &get -n; &dch -f; &nf -D 1; &put"
@@ -113,6 +109,7 @@ design -save post_retiming
 puts "Save a backup that won't get deleted by the check_logical_equivalence function"
 design -save backup_1
 
+puts "Perform logical equivalence checking"
 check_logical_equivalence $::env(DESIGN_NAME) pre_retiming post_retiming
 
 puts "Restore the design"
@@ -154,10 +151,9 @@ opt
 # Replace undef values with defined constants
 setundef -zero
 
-write_verilog -noexpr -noattr pre_abc.v
-
 
 if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
+  puts "Running basic abc"
   log_cmd abc {*}$abc_args
 } else {
   scratchpad -set abc9.script $::env(SCRIPTS_DIR)/abc_speed_gia_only.script
@@ -166,15 +162,13 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
   log_cmd abc_new {*}$abc_args
   delete {t:$specify*}
 }
-write_verilog -noexpr -noattr post_abc.v
 
-#puts "Replace each DFF with a corresponding latch"
-#techmap -map $::env(DFF_TO_LATCH_MAP_FILE)
-#opt -full
+puts "Replace each DFF with a corresponding latch"
+techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
 
-#puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
-#techmap
-#log_cmd abc {*}$abc_args
+puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
+techmap
+log_cmd abc {*}$abc_args
 
 
 # Splitting nets resolves unwanted compound assign statements in

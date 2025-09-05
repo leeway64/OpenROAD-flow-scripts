@@ -185,3 +185,20 @@ proc connect_clk_2 {} {
         connect -port $cell C clk_2
     }
 }
+
+proc check_logical_equivalence {top_module gold gate} {
+    # Create new modules
+    design -copy-from $gold -as gold $top_module
+    design -copy-from $gate -as gate $top_module
+
+    equiv_make -inames gold gate equiv
+
+    prep -flatten -top equiv
+    yosys cd equiv
+    opt_clean -purge
+
+    async2sync
+    equiv_simple -undef -short -seq 1 
+    equiv_induct -undef -seq 4
+    equiv_status -assert
+}

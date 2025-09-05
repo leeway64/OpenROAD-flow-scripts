@@ -4,6 +4,33 @@
 // /home/leeway64/.volare/sky130A/libs.tech/openlane/sky130_fd_sc_hd/latch_map.v
 // Refer to this page for a list of all the cells in the SKY130 PDK
 
+module sky130_fd_sc_hd__edfxtp_1
+(
+    input CLK,
+    input D,
+    input DE,
+    output Q
+);
+
+    reg mux_output;
+    wire buf_Q;
+    always @(*) begin
+        if (DE) begin
+            mux_output = D;
+        end else begin
+            mux_output = buf_Q;
+        end
+    end
+
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .CLK(CLK),
+        .D(mux_output),
+        .Q(buf_Q)
+    );
+
+    assign Q = buf_Q;
+endmodule
+
 // dfrtn only has 1 size (1), but dlrtn has sizes of 1, 2, 4, so I am selecting dlrtn of size 1 to
 // match dfrtn
 module sky130_fd_sc_hd__dfrtn_1
