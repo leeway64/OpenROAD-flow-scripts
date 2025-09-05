@@ -58,13 +58,6 @@ if { ![env_var_equals SYNTH_HIERARCHICAL 1] } {
   synth -flatten -run coarse:fine {*}$synth_full_args
 }
 
-puts "Duplicate each flip-flop"
-techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
-
-puts "Connect the clk_2 input to the appropriate cells"
-connect_clk_2
-write_verilog -noexpr -noattr post_duplication.v
-
 json -o $::env(RESULTS_DIR)/mem.json
 # Run report and check here so as to fail early if this synthesis run is doomed
 exec -- $::env(PYTHON_EXE) $::env(SCRIPTS_DIR)/mem_dump.py \
@@ -80,12 +73,15 @@ if { [env_var_exists_and_non_empty SYNTH_RETIME_MODULES] } {
   select -clear
 }
 
+write_verilog -noexpr -noattr pre_duplication.v
+
 if {
   [env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] ||
   [env_var_exists_and_non_empty SWAP_ARITH_OPERATORS]
 } {
   source $::env(SCRIPTS_DIR)/synth_wrap_operators.tcl
 } else {
+  puts "Run fine-grain synthesis"
   synth -top $::env(DESIGN_NAME) -run fine: {*}$synth_full_args
 }
 
@@ -97,6 +93,30 @@ delete t:\$print
 # of the form \regName$_DFF_P_. We should fix yosys to make it the reg name.
 # At least this is predictable.
 renames -wire
+
+
+puts "Duplicate each flip-flop"
+techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
+
+puts "Connect the clk_2 input to the appropriate cells"
+connect_clk_2
+
+write_verilog -noexpr -noattr post_duplication.v
+
+write_verilog -noexpr -noattr pre_retiming.v
+design -save pre_retiming
+
+abc -keepff -dff -script "+strash; zero; &get -n; print_latch; &fraig -x; &put; scorr; dc2; dretime; retime -M 4 -s -D 1 -o -v; strash; &get -n; &dch -f; &nf -D 1; &put"
+
+design -save post_retiming
+
+puts "Save a backup that won't get deleted by the check_logical_equivalence function"
+design -save backup_1
+
+check_logical_equivalence $::env(DESIGN_NAME) pre_retiming post_retiming
+
+puts "Restore the design"
+design -load backup_1
 
 # Optimize the design
 opt -purge
@@ -134,6 +154,9 @@ opt
 # Replace undef values with defined constants
 setundef -zero
 
+write_verilog -noexpr -noattr pre_abc.v
+
+
 if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
   log_cmd abc {*}$abc_args
 } else {
@@ -143,14 +166,15 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
   log_cmd abc_new {*}$abc_args
   delete {t:$specify*}
 }
+write_verilog -noexpr -noattr post_abc.v
 
-puts "Replace each DFF with a corresponding latch"
-techmap -map $::env(DFF_TO_LATCH_MAP_FILE)
-opt -full
+#puts "Replace each DFF with a corresponding latch"
+#techmap -map $::env(DFF_TO_LATCH_MAP_FILE)
+#opt -full
 
-puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
-techmap
-log_cmd abc {*}$abc_args
+#puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
+#techmap
+#log_cmd abc {*}$abc_args
 
 
 # Splitting nets resolves unwanted compound assign statements in
