@@ -9,3 +9,6 @@ export CORE_UTILIZATION = 45
 export PLACE_DENSITY_LB_ADDON = 0.2
 
 export REMOVE_ABC_BUFFERS = 1
+
+# This allows Yosys to print more details to the terminal during execution
+export YOSYS_FLAGS

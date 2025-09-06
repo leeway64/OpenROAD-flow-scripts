@@ -4,6 +4,7 @@
 // /home/leeway64/.volare/sky130A/libs.tech/openlane/sky130_fd_sc_hd/latch_map.v
 // Refer to this page for a list of all the cells in the SKY130 PDK
 
+// edfxtp and dlxtp only have a size of 1
 module sky130_fd_sc_hd__edfxtp_1
 (
     input CLK,

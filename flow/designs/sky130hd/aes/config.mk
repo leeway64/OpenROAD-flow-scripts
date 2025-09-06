@@ -20,3 +20,6 @@ export REMOVE_ABC_BUFFERS = 1
 
 export CTS_CLUSTER_SIZE = 20
 export CTS_CLUSTER_DIAMETER = 50
+
+# This allows Yosys to print more details to the terminal during execution
+export YOSYS_FLAGS

@@ -52,6 +52,12 @@ module \$_DFFE_PN1P_ (input D, C, R, E, output Q);
     \$_DFFE_PN1P_ _TECHMAP_REPLACE_.custom_FF_replace_2 (.D(connector), .C(C), .R(R), .E(E), .Q(Q));
 endmodule
 
+module \$_DFFE_PP0P_ (input D, C, R, E, output Q);
+    wire connector;
+    \$_DFFE_PP0P_ _TECHMAP_REPLACE_.custom_FF_replace_1 (.D(D), .C(C), .R(R), .E(E), .Q(connector));
+    \$_DFFE_PP0P_ _TECHMAP_REPLACE_.custom_FF_replace_2 (.D(connector), .C(C), .R(R), .E(E), .Q(Q));
+endmodule
+
 module \$_SDFFE_PN0P_ (input D, C, R, E, output Q);
     wire connector;
     \$_SDFFE_PN0P_ _TECHMAP_REPLACE_.custom_FF_replace_1 (.D(D), .C(C), .R(R), .E(E), .Q(connector));
