@@ -96,6 +96,9 @@ renames -wire
 
 puts "Duplicate each flip-flop"
 techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
+flatten
+opt -full
+clean -purge
 
 puts "Connect the clk_2 input to the appropriate cells"
 connect_clk_2
@@ -165,10 +168,14 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
 
 puts "Replace each DFF with a corresponding latch"
 techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
+flatten
+opt -full
 
 puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
 techmap
 log_cmd abc {*}$abc_args
+flatten
+opt -full
 
 
 # Splitting nets resolves unwanted compound assign statements in
