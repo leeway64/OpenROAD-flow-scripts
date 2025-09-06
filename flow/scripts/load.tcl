@@ -53,17 +53,20 @@ proc write_eqy_verilog { filename } {
   }
 }
 
+# Add flatten and opt to the EQY script so that EQY doesn't think there are loops in the design
+# See this post for more details:
+#   https://www.reddit.com/r/yosys/comments/4hhtoa/yosys_complains_of_combinational_loops_when/
 proc write_eqy_script { } {
   set top_cell [current_design]
   set outfile [open "$::env(OBJECTS_DIR)/4_eqy_test.eqy" w]
   # Gold netlist
   puts $outfile "\[gold]\nread_liberty -ignore_miss_func $::env(LIB_FILES)\n"
   puts $outfile "read_verilog -sv $::env(RESULTS_DIR)/4_before_rsz.v\n"
-  puts $outfile "prep -top $top_cell -flatten\nmemory_map\n\n"
+  puts $outfile "prep -top $top_cell -flatten\nmemory_map\nflatten\nopt -full\n\n"
   # Modified netlist
   puts $outfile "\[gate]\nread_liberty -ignore_miss_func $::env(LIB_FILES)\n"
   puts $outfile "read_verilog -sv $::env(RESULTS_DIR)/4_after_rsz.v\n"
-  puts $outfile "prep -top $top_cell -flatten\nmemory_map\n\n"
+  puts $outfile "prep -top $top_cell -flatten\nmemory_map\nflatten\nopt -full\n\n"
 
   # Recommendation from eqy team on how to speed up a design
   puts $outfile "\[match *]\ngate-nomatch _*_.*"
