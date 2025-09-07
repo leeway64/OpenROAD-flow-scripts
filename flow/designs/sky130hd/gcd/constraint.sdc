@@ -1,5 +1,7 @@
 current_design gcd
 
+############### Preliminaries ###############
+
 set clk_period [expr 2 * 1.1]
 set clk_io_pct 0.2
 set duty_cycle 0.4
@@ -16,6 +18,7 @@ lappend clk_1_waveform_list $clk_1_fall
 set clk_2_waveform_list {}
 lappend clk_2_waveform_list $clk_2_rise
 lappend clk_2_waveform_list $clk_2_fall
+
 
 ############### Set up clock 1 ###############
 
@@ -39,13 +42,16 @@ set clk_2_port [get_ports $clk_2_port_name]
 create_clock -name $clk_2_name -period $clk_period $clk_2_port -waveform $clk_2_waveform_list
 
 
+############### Create non-clock inputs ###############
 
 set non_clock_inputs [all_inputs -no_clocks]
+
 
 ############### Set delays for clock 1 ###############
 
 set_input_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name $non_clock_inputs
 set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name [all_outputs]
+
 
 ############### Set delays for clock 2 ###############
 
