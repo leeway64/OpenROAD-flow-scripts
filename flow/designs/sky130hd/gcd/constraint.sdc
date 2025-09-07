@@ -1,6 +1,6 @@
-current_design gcd
-
 ############### Preliminaries ###############
+
+current_design gcd
 
 set clk_period [expr 2 * 1.1]
 set clk_io_pct 0.2
