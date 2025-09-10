@@ -12,3 +12,6 @@ export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/constraint.
 export CORE_UTILIZATION = 40
 export PLACE_DENSITY    = 0.60
 export TNS_END_PERCENT  = 100
+
+# This allows Yosys to print more details to the terminal during execution
+export YOSYS_FLAGS

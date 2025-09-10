@@ -13,23 +13,12 @@ module sky130_fd_sc_hd__edfxtp_1
     output Q
 );
 
-    reg mux_output;
-    wire buf_Q;
-    always @(*) begin
-        if (DE) begin
-            mux_output = D;
-        end else begin
-            mux_output = buf_Q;
-        end
-    end
-
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .CLK(CLK),
+        .CLK(CLK && DE),
         .D(mux_output),
-        .Q(buf_Q)
+        .Q(Q)
     );
 
-    assign Q = buf_Q;
 endmodule
 
 // dfrtn only has 1 size (1), but dlrtn has sizes of 1, 2, 4, so I am selecting dlrtn of size 1 to

@@ -14,6 +14,14 @@ flow stages through Tcl commands and Python APIs.
 make DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk .DEFAULT_GOAL=synth MODE=two_phase_clk | tee orfs.log
 ```
 
+## Running static timing analysis
+
+Inside `openroad`, run the following:
+
+```
+source platforms/sky130hd/specify_files_for_sdc.tcl
+```
+
 ## Citing this Work
 
 If you use this software in any published work, we would appreciate a citation!
