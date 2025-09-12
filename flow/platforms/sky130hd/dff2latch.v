@@ -15,7 +15,7 @@ module sky130_fd_sc_hd__edfxtp_1
 
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .CLK(CLK && DE),
-        .D(mux_output),
+        .D(D),
         .Q(Q)
     );
 
