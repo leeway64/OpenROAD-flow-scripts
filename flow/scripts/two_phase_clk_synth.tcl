@@ -63,17 +63,6 @@ json -o $::env(RESULTS_DIR)/mem.json
 exec -- $::env(PYTHON_EXE) $::env(SCRIPTS_DIR)/mem_dump.py \
   --max-bits $::env(SYNTH_MEMORY_MAX_BITS) $::env(RESULTS_DIR)/mem.json
 
-if { [env_var_exists_and_non_empty SYNTH_RETIME_MODULES] } {
-  select $::env(SYNTH_RETIME_MODULES)
-  opt -fast -full
-  memory_map
-  opt -full
-  techmap
-  abc -dff -script $::env(SCRIPTS_DIR)/abc_retime.script
-  select -clear
-}
-
-
 if {
   [env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] ||
   [env_var_exists_and_non_empty SWAP_ARITH_OPERATORS]
@@ -97,7 +86,7 @@ renames -wire
 puts "Duplicate each flip-flop"
 techmap -max_iter 1 -map $::env(DUPLICATE_DFFS_MAP_FILE)
 flatten
-opt -full
+opt -noff
 clean -purge
 
 puts "Connect the clk_2 input to the appropriate cells"
@@ -119,7 +108,7 @@ puts "Restore the design"
 design -load backup_1
 
 # Optimize the design
-opt -purge
+opt -noff -purge
 
 # Technology mapping of adders
 if { [env_var_exists_and_non_empty ADDER_MAP_FILE] } {
@@ -129,7 +118,7 @@ if { [env_var_exists_and_non_empty ADDER_MAP_FILE] } {
   techmap -map $::env(ADDER_MAP_FILE)
   techmap
   # Quick optimization
-  opt -fast -purge
+  opt -noff -fast -purge
 }
 
 # Technology mapping of latches
@@ -149,7 +138,7 @@ if { [env_var_exists_and_non_empty DFF_LIB_FILE] } {
 } else {
   dfflibmap -liberty $::env(DONT_USE_SC_LIB) {*}$dfflibmap_args
 }
-opt
+opt -noff
 
 # Replace undef values with defined constants
 setundef -zero
@@ -169,13 +158,13 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
 puts "Replace each DFF with a corresponding latch"
 techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
 flatten
-opt -full
+opt -noff
 
 puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
 techmap
 log_cmd abc {*}$abc_args
 flatten
-opt -full
+opt -noff
 
 
 # Splitting nets resolves unwanted compound assign statements in
