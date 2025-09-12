@@ -126,6 +126,14 @@ if { [env_var_exists_and_non_empty LATCH_MAP_FILE] } {
   techmap -map $::env(LATCH_MAP_FILE)
 }
 
+techmap -autoproc -map $::env(DFF_WITH_LOOP_TO_LATCH_MAP_FILE)
+flatten
+opt -noff
+puts "Map the cells that $::env(DFF_WITH_LOOP_TO_LATCH_MAP_FILE) creates"
+techmap
+flatten
+opt -noff
+
 set dfflibmap_args ""
 foreach cell $::env(DONT_USE_CELLS) {
   lappend dfflibmap_args -dont_use $cell
