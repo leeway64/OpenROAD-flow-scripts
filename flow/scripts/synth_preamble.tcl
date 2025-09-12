@@ -119,6 +119,8 @@ if { [env_var_exists_and_non_empty SDC_FILE_CLOCK_PERIOD] } {
   close $fp
 }
 
+lappend abc_args -keepff
+
 # Create argument list for stat
 set stat_libs ""
 foreach lib $::env(DONT_USE_LIBS) {
