@@ -1,3 +1,5 @@
+// This file duplicates each DFF
+
 module \$_DFFE_PP_ (input D, C, E, output Q);
     wire connector;
     \$_DFFE_PP_ _TECHMAP_REPLACE_.custom_FF_replace_1 (.D(D), .C(C), .E(E), .Q(connector));

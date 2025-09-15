@@ -1,6 +1,5 @@
-// Refer to these two files for more information on mapping:
-//  OpenROAD-flow-scripts/flow/platforms/sky130hd/cells_latch_hd.v
-//  $env(PDK_ROOT)/sky130A/libs.tech/openlane/sky130_fd_sc_hd/latch_map.v
+// This file converts a DFF that is used in one of the example designs into an 
+// "equivalent" latch
 
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with positive polarity enable."
@@ -45,7 +44,19 @@ module \$_DFF_P_
     );
 endmodule
 
-module \$_SDFFE_PN0P_ (input D, C, R, E, output Q);
+// TODO
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with negative polarity synchronous reset and positive 
+//      polarity clock enable (with reset having priority)".
+module \$_SDFFE_PN0P_
+(
+    input D,
+    input C,
+    input R,
+    input E,
+    output Q
+);
+
     wire temp_q;
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .GATE(C && E),
@@ -54,7 +65,7 @@ module \$_SDFFE_PN0P_ (input D, C, R, E, output Q);
     );
 
     always @(*) begin
-        if (R && C) begin
+        if (!R && C) begin
             Q <= 1'b0;
         end else begin
             Q <= temp_q;
@@ -63,7 +74,18 @@ module \$_SDFFE_PN0P_ (input D, C, R, E, output Q);
 
 endmodule
 
-module \$_SDFFE_PP0P_ (input D, C, R, E, output Q);
+// TODO
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity synchronous reset and positive polarity
+//      clock enable (with reset having priority)."
+module \$_SDFFE_PP0P_
+(
+    input D,
+    input C,
+    input R,
+    input E,
+    output Q
+);
     wire temp_q;
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .GATE(C && E),
@@ -72,7 +94,7 @@ module \$_SDFFE_PP0P_ (input D, C, R, E, output Q);
     );
     
     always @(*) begin
-        if (!R && C) begin
+        if (R && C) begin
             Q <= 1'b0;
         end else begin
             Q <= temp_q;
@@ -80,47 +102,105 @@ module \$_SDFFE_PP0P_ (input D, C, R, E, output Q);
     end
 endmodule
 
-module \$_SDFF_PP0_ ()
+// TODO
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity synchronous reset."
+module \$_SDFF_PP0_
+(
+    input D,
+    input C,
+    input R,
+    output Q
+);
+
+    wire temp_q;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(C),
+        .D(D),
+        .Q(temp_q)
+    );
+
 endmodule
 
-module \$_SDFF_PP1_ ()
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity synchronous set."
+module \$_SDFF_PP1_
+(
+    input D,
+    input C,
+    input R,
+    output Q
+);
+    wire mux_output;
+    sky130_fd_sc_hd__mux2_1 MUX
+    (
+        .A0(D),
+        .A1(1'b1),
+        .S(R),
+        .X(mux_output)
+    );
+
+    wire temp_q;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(C),
+        .D(mux_output),
+        .Q(Q)
+    );
 endmodule
 
-module \$_DFFE_PP0P_ (input D, C, R, E, output Q);
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity reset and positive polarity clock
+//      enable."
+module \$_DFFE_PP0P_
+(
+    input D,
+    input C,
+    input R,
+    input E,
+    output Q
+);
+
+    wire enable;
+    sky130_fd_sc_hd__and2_1 AND (
+        .A(C),
+        .B(E),
+        .X(enable)
+    );
+
+    wire reset;
+    sky130_fd_sc_hd__inv INV (
+        .A(R),
+        .Y(reset)
+    );
+
     sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C && E),
-        .RESET_B(!R),
+        .GATE(enable),
+        .RESET_B(reset),
         .D(D),
         .Q(Q)
     );
 endmodule
 
-/*
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity reset."
 module \$_DFF_PP0_
 (
-    input,
-    output
-);
-endmodule
-*/
-
-(* techmap_celltype="sky130_fd_sc_hd__dfstp_[124]" *)
-module sky130_fd_sc_hd__dfstp
-(
-    input CLK,
     input D,
-    input SET_B,
+    input C,
+    input R,
     output Q
 );
-    // The SKY130 PDK doesn't have a latch with asynchronous set, so we need to create one here
-    wire D_or_set, gate_or_set;
-    assign D_or_set = D || ~SET_B;
-    assign gate_or_set = CLK || ~SET_B;
 
-    // Note that dlxtp only has 1 size
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .D(D_or_set),
-        .GATE(gate_or_set),
+    wire reset;
+    sky130_fd_sc_hd__inv INV (
+        .A(R),
+        .Y(reset)
+    );
+    sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
+        .GATE(C),
+        .RESET_B(reset),
+        .D(D),
         .Q(Q)
     );
+
 endmodule
