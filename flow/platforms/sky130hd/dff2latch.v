@@ -57,7 +57,7 @@ module \$_SDFFE_PN0P_
 );
 
     wire clk_enable;
-    sky130_fd_sc_hd__and2_1 AND (
+    sky130_fd_sc_hd__and2_1 AND_1 (
         .A(C),
         .B(E),
         .X(clk_enable)
@@ -71,13 +71,13 @@ module \$_SDFFE_PN0P_
     );
 
     wire inv_reset;
-    sky130_fd_sc_hd__inv INV (
+    sky130_fd_sc_hd__inv_1 INV (
         .A(R),
         .Y(inv_reset)
     );
 
     wire mux_select;
-    sky130_fd_sc_hd__and2_1 AND (
+    sky130_fd_sc_hd__and2_1 AND_2 (
         .A(inv_reset),
         .B(C),
         .X(mux_select)
@@ -107,7 +107,7 @@ module \$_SDFFE_PP0P_
 );
 
     wire clk_enable;
-    sky130_fd_sc_hd__and2_1 AND (
+    sky130_fd_sc_hd__and2_1 AND_1 (
         .A(C),
         .B(E),
         .X(clk_enable)
@@ -121,7 +121,7 @@ module \$_SDFFE_PP0P_
     );
 
     wire mux_select;
-    sky130_fd_sc_hd__and2_1 AND (
+    sky130_fd_sc_hd__and2_1 AND_2 (
         .A(R),
         .B(C),
         .X(mux_select)
@@ -212,7 +212,7 @@ module \$_DFFE_PP0P_
     );
 
     wire reset;
-    sky130_fd_sc_hd__inv INV (
+    sky130_fd_sc_hd__inv_1 INV (
         .A(R),
         .Y(reset)
     );
@@ -236,7 +236,7 @@ module \$_DFF_PP0_
 );
 
     wire reset;
-    sky130_fd_sc_hd__inv INV (
+    sky130_fd_sc_hd__inv_1 INV (
         .A(R),
         .Y(reset)
     );
