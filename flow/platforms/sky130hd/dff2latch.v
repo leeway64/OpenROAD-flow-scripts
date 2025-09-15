@@ -2,7 +2,48 @@
 //  OpenROAD-flow-scripts/flow/platforms/sky130hd/cells_latch_hd.v
 //  $env(PDK_ROOT)/sky130A/libs.tech/openlane/sky130_fd_sc_hd/latch_map.v
 
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop with positive polarity enable."
+module \$_DFFE_PP_
+(
+    input D,
+    input C,
+    input E,
+    output Q
+);
 
+    wire enable;
+    sky130_fd_sc_hd__and2_1 AND (
+        .A(C),
+        .B(E),
+        .X(enable)
+    );
+
+    // dlxtp only has a size of 1
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(enable),
+        .D(D),
+        .Q(Q)
+    );
+
+endmodule
+
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop."
+module \$_DFF_P_
+(
+    input D,
+    input C,
+    output Q
+);
+    // dlxtp only has 1 size
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_
+    (
+        .D(D),
+        .GATE(C),
+        .Q(Q)
+    );
+endmodule
 
 module \$_SDFFE_PN0P_ (input D, C, R, E, output Q);
     wire temp_q;
@@ -39,6 +80,12 @@ module \$_SDFFE_PP0P_ (input D, C, R, E, output Q);
     end
 endmodule
 
+module \$_SDFF_PP0_ ()
+endmodule
+
+module \$_SDFF_PP1_ ()
+endmodule
+
 module \$_DFFE_PP0P_ (input D, C, R, E, output Q);
     sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
         .GATE(C && E),
@@ -48,88 +95,14 @@ module \$_DFFE_PP0P_ (input D, C, R, E, output Q);
     );
 endmodule
 
-
-
-// edfxtp and dlxtp only have a size of 1
-module sky130_fd_sc_hd__edfxtp_1
+/*
+module \$_DFF_PP0_
 (
-    input CLK,
-    input D,
-    input DE,
-    output Q
+    input,
+    output
 );
-
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(CLK && DE),
-        .D(D),
-        .Q(Q)
-    );
-
 endmodule
-
-// dfrtn only has 1 size (1), but dlrtn has sizes of 1, 2, 4, so I am selecting dlrtn of size 1 to
-// match dfrtn
-module sky130_fd_sc_hd__dfrtn_1
-(
-    input CLK_N,
-    input D,
-    input RESET_B,
-    output Q
-);
-    sky130_fd_sc_hd__dlrtn_1 _TECHMAP_REPLACE_
-    (
-        .RESET_B(RESET_B),
-        .D(D),
-        .GATE_N(CLK_N),
-        .Q(Q)
-    );
-endmodule
-
-// dfrtp and dlrtp both have sizes of 1, 2, and 4, so I need to match each size manually
-module sky130_fd_sc_hd__dfrtp_1
-(
-    input CLK,
-    input D,
-    input RESET_B,
-    output Q
-);
-    sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
-        .RESET_B(RESET_B),
-        .D(D),
-        .GATE(CLK),
-        .Q(Q)
-    );
-endmodule
-
-module sky130_fd_sc_hd__dfrtp_2
-(
-    input CLK,
-    input D,
-    input RESET_B,
-    output Q
-);
-    sky130_fd_sc_hd__dlrtp_2 _TECHMAP_REPLACE_ (
-        .RESET_B(RESET_B),
-        .D(D),
-        .GATE(CLK),
-        .Q(Q)
-    );
-endmodule
-
-module sky130_fd_sc_hd__dfrtp_4
-(
-    input CLK,
-    input D,
-    input RESET_B,
-    output Q
-);
-    sky130_fd_sc_hd__dlrtp_4 _TECHMAP_REPLACE_ (
-        .RESET_B(RESET_B),
-        .D(D),
-        .GATE(CLK),
-        .Q(Q)
-    );
-endmodule
+*/
 
 (* techmap_celltype="sky130_fd_sc_hd__dfstp_[124]" *)
 module sky130_fd_sc_hd__dfstp
@@ -148,22 +121,6 @@ module sky130_fd_sc_hd__dfstp
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .D(D_or_set),
         .GATE(gate_or_set),
-        .Q(Q)
-    );
-endmodule
-
-(* techmap_celltype="sky130_fd_sc_hd__dfxtp_[124]" *)
-module sky130_fd_sc_hd__dfxtp
-(
-    input CLK,
-    input D,
-    output Q
-);
-    // Note that dlxtp only has 1 size
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_
-    (
-        .D(D),
-        .GATE(CLK),
         .Q(Q)
     );
 endmodule

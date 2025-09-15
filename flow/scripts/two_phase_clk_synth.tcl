@@ -126,10 +126,8 @@ if { [env_var_exists_and_non_empty LATCH_MAP_FILE] } {
   techmap -map $::env(LATCH_MAP_FILE)
 }
 
-techmap -autoproc -map $::env(DFF_WITH_LOOP_TO_LATCH_MAP_FILE)
-flatten
-opt -noff
-puts "Map the cells that $::env(DFF_WITH_LOOP_TO_LATCH_MAP_FILE) creates"
+# puts "Replace each DFF with a corresponding latch"
+techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
 techmap
 flatten
 opt -noff
@@ -162,17 +160,6 @@ if { ![env_var_exists_and_non_empty SYNTH_WRAPPED_OPERATORS] } {
   log_cmd abc_new {*}$abc_args
   delete {t:$specify*}
 }
-
-puts "Replace each DFF with a corresponding latch"
-techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
-flatten
-opt -noff
-
-puts "Map the cells that $::env(DFF_TO_LATCH_MAP_FILE) creates"
-techmap
-log_cmd abc {*}$abc_args
-flatten
-opt -noff
 
 
 # Splitting nets resolves unwanted compound assign statements in
