@@ -56,26 +56,40 @@ module \$_SDFFE_PN0P_
     output Q
 );
 
-    wire enable;
+    wire clk_enable;
     sky130_fd_sc_hd__and2_1 AND (
         .A(C),
         .B(E),
-        .X(enable)
+        .X(clk_enable)
+    );
+
+    wire latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(clk_enable),
+        .D(D),
+        .Q(latch_output)
+    );
+
+    wire inv_reset;
+    sky130_fd_sc_hd__inv INV (
+        .A(R),
+        .Y(inv_reset)
+    );
+
+    wire mux_select;
+    sky130_fd_sc_hd__and2_1 AND (
+        .A(inv_reset),
+        .B(C),
+        .X(mux_select)
     );
 
     wire mux_output;
     sky130_fd_sc_hd__mux2_1 MUX
     (
-        .A0(1'b0),
-        .A1(D),
-        .S(R),
-        .X(mux_output)
-    );
-
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(enable),
-        .D(mux_output),
-        .Q(Q)
+        .A0(latch_output),
+        .A1(1'b0),
+        .S(mux_select),
+        .X(Q)
     );
 
 endmodule
@@ -92,26 +106,34 @@ module \$_SDFFE_PP0P_
     output Q
 );
 
-    wire enable;
+    wire clk_enable;
     sky130_fd_sc_hd__and2_1 AND (
         .A(C),
         .B(E),
-        .X(enable)
+        .X(clk_enable)
+    );
+
+    wire latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(clk_enable),
+        .D(D),
+        .Q(latch_output)
+    );
+
+    wire mux_select;
+    sky130_fd_sc_hd__and2_1 AND (
+        .A(R),
+        .B(C),
+        .X(mux_select)
     );
 
     wire mux_output;
     sky130_fd_sc_hd__mux2_1 MUX
     (
-        .A0(D),
+        .A0(latch_output),
         .A1(1'b0),
-        .S(R),
-        .X(mux_output)
-    );
-
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(enable),
-        .D(mux_output),
-        .Q(Q)
+        .S(mux_select),
+        .X(Q)
     );
 
 endmodule
