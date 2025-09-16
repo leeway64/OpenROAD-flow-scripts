@@ -46,7 +46,6 @@ module \$_DFF_P_
     );
 endmodule
 
-// TODO
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with negative polarity synchronous reset and positive 
 //      polarity clock enable (with reset having priority)".
@@ -59,46 +58,32 @@ module \$_SDFFE_PN0P_
     output Q
 );
 
-    wire clk_enable;
-    sky130_fd_sc_hd__and2_1 AND_1 (
-        .A(C),
-        .B(E),
-        .X(clk_enable)
-    );
-
-    wire latch_output;
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(clk_enable),
-        .D(D),
-        .Q(latch_output)
-    );
-
-    wire inv_reset;
-    sky130_fd_sc_hd__inv_1 INV (
-        .A(R),
-        .Y(inv_reset)
-    );
-
-    wire mux_select;
-    sky130_fd_sc_hd__and2_1 AND_2 (
-        .A(inv_reset),
-        .B(C),
-        .X(mux_select)
-    );
-
-    wire mux_output;
-    sky130_fd_sc_hd__mux2_1 MUX
+    wire mux_output_1;
+    sky130_fd_sc_hd__mux2_1 MUX_1
     (
-        .A0(latch_output),
-        .A1(1'b0),
-        .S(mux_select),
-        .X(Q)
+        .A0(Q),
+        .A1(D),
+        .S(E),
+        .X(mux_output_1)
+    );
+
+    wire mux_output_2;
+    sky130_fd_sc_hd__mux2_1 MUX_2
+    (
+        .A0(1'b0),
+        .A1(mux_output_1),
+        .S(R),
+        .X(mux_output_2)
+    );
+    
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(clk),
+        .D(mux_output_2),
+        .Q(Q)
     );
 
 endmodule
 
-
-// TODO
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with positive polarity synchronous reset and positive
 //      polarity clock enable (with reset having priority)."
@@ -111,34 +96,28 @@ module \$_SDFFE_PP0P_
     output Q
 );
 
-    wire clk_enable;
-    sky130_fd_sc_hd__and2_1 AND_1 (
-        .A(C),
-        .B(E),
-        .X(clk_enable)
-    );
-
-    wire latch_output;
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(clk_enable),
-        .D(D),
-        .Q(latch_output)
-    );
-
-    wire mux_select;
-    sky130_fd_sc_hd__and2_1 AND_2 (
-        .A(R),
-        .B(C),
-        .X(mux_select)
-    );
-
-    wire mux_output;
-    sky130_fd_sc_hd__mux2_1 MUX
+    wire mux_output_1;
+    sky130_fd_sc_hd__mux2_1 MUX_1
     (
-        .A0(latch_output),
+        .A0(Q),
+        .A1(D),
+        .S(E),
+        .X(mux_output_1)
+    );
+
+    wire mux_output_2;
+    sky130_fd_sc_hd__mux2_1 MUX_2
+    (
+        .A0(mux_output_1),
         .A1(1'b0),
-        .S(mux_select),
-        .X(Q)
+        .S(R),
+        .X(mux_output_2)
+    );
+    
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+        .GATE(clk),
+        .D(mux_output_2),
+        .Q(Q)
     );
 
 endmodule
@@ -162,7 +141,6 @@ module \$_SDFF_PP0_
         .X(mux_output)
     );
 
-    wire temp_q;
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .GATE(C),
         .D(mux_output),
@@ -180,6 +158,7 @@ module \$_SDFF_PP1_
     input R,
     output Q
 );
+
     wire mux_output;
     sky130_fd_sc_hd__mux2_1 MUX
     (
@@ -189,7 +168,6 @@ module \$_SDFF_PP1_
         .X(mux_output)
     );
 
-    wire temp_q;
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
         .GATE(C),
         .D(mux_output),
@@ -231,6 +209,7 @@ module \$_DFFE_PP0P_
         .D(mux_output),
         .Q(Q)
     );
+
 endmodule
 
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
@@ -243,14 +222,15 @@ module \$_DFF_PP0_
     output Q
 );
 
-    wire reset;
+    wire inv_reset;
     sky130_fd_sc_hd__inv_1 INV (
         .A(R),
-        .Y(reset)
+        .Y(inv_reset)
     );
+
     sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
         .GATE(C),
-        .RESET_B(reset),
+        .RESET_B(inv_reset),
         .D(D),
         .Q(Q)
     );
