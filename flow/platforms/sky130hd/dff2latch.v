@@ -77,7 +77,7 @@ module \$_SDFFE_PN0P_
     );
     
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(clk),
+        .GATE(C),
         .D(mux_output_2),
         .Q(Q)
     );
@@ -115,7 +115,7 @@ module \$_SDFFE_PP0P_
     );
     
     sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(clk),
+        .GATE(C),
         .D(mux_output_2),
         .Q(Q)
     );

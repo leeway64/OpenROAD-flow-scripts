@@ -57,3 +57,7 @@ set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name [all_output
 
 set_input_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name $non_clock_inputs
 set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name [all_outputs]
+
+
+set_max_time_borrow 0.5 $clk_1_name
+set_max_time_borrow 0.5 $clk_2_name

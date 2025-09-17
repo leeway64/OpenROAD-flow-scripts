@@ -1,9 +1,12 @@
-// This file duplicates each DFF
+// This file duplicates each DFF, and also adds extra flip-flops to make sure that each enable and
+// reset are clocked by the correct clock (i.e., clock 1 goes to clock 2, clock 2 goes to clock 1).
 
 module \$_DFFE_PP_ (input D, C, E, output Q);
-    wire connector;
-    \$_DFFE_PP_ _TECHMAP_REPLACE_.custom_FF_replace_1 (.D(D), .C(C), .E(E), .Q(connector));
-    \$_DFFE_PP_ _TECHMAP_REPLACE_.custom_FF_replace_2 (.D(connector), .C(C), .E(E), .Q(Q));
+    wire FF_connector;
+    \$_DFFE_PP_ _TECHMAP_REPLACE_.custom_FF_replace_1 (.D(D), .C(C), .E(E), .Q(FF_connector));
+    wire enable_FF_output;
+    \$_DFF_P_ enable_FF (.D(E), .C(C), .Q(enable_FF_output));
+    \$_DFFE_PP_ _TECHMAP_REPLACE_.custom_FF_replace_2 (.D(FF_connector), .C(C), .E(enable_FF_output), .Q(Q));
 endmodule
 
 module \$_DFF_P_ (input D, C, output Q);
