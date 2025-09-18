@@ -161,9 +161,7 @@ proc convert_liberty_areas { } {
   }
 }
 
-# Connect the clk_2 input to the second DFF cell in the pair
-proc connect_clk {cell_name clk_port_name} {
-    # Find all cells with a name ending in custom_FF_replace_2
+proc connect_clk {cell_name clock_pin_name target_clk_port_name} {
     # Refer to this GitHub PR for more information on how to get the output of a Yosys command into a
     # Tcl variable: https://github.com/YosysHQ/yosys/pull/3349
     tee -q -s cells_to_update_scratchpad select -list c:$cell_name
@@ -184,11 +182,14 @@ proc connect_clk {cell_name clk_port_name} {
 
     # Connect clk_2 to the clock port of each cell
     foreach cell $DFF_list {
-        connect -port $cell C $clk_port_name
+        connect -port $cell $clock_pin_name $target_clk_port_name
     }
 }
 
 proc check_logical_equivalence {top_module gold gate} {
+    puts "Save a backup that won't get deleted by this function"
+    design -save backup_1
+    
     # Create new modules
     design -copy-from $gold -as gold $top_module
     design -copy-from $gate -as gate $top_module
@@ -203,4 +204,7 @@ proc check_logical_equivalence {top_module gold gate} {
     equiv_simple -undef -short -seq 1 
     equiv_induct -undef -seq 4
     equiv_status -assert
+
+    puts "Restore the design"
+    design -load backup_1
 }

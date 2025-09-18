@@ -89,8 +89,10 @@ flatten
 opt -noff
 clean -purge
 
-puts "Connect the clk_2 input to the appropriate cells"
-connect_clk *custom_FF_replace_2* clk_2
+
+puts "Connect the clk_2 input to the second DFF cell in each pair"
+# Find all cells with a name ending in custom_FF_replace_2
+connect_clk *custom_FF_replace_2 C clk_2
 
 design -save pre_retiming
 
@@ -98,14 +100,8 @@ abc -keepff -dff -script "+strash; zero; &get -n; print_latch; &fraig -x; &put; 
 
 design -save post_retiming
 
-puts "Save a backup that won't get deleted by the check_logical_equivalence function"
-design -save backup_1
-
 puts "Perform logical equivalence checking"
 check_logical_equivalence $::env(DESIGN_NAME) pre_retiming post_retiming
-
-puts "Restore the design"
-design -load backup_1
 
 # Optimize the design
 opt -noff -purge
@@ -131,6 +127,12 @@ techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
 techmap
 flatten
 opt -noff
+
+# Connect the latch in the recirculation mux loop to the correct clock. For example, a latch that is 
+# connected to clock 1 should have a recirculation mux latch be connected to clock 2, and vice versa.
+connect_clk *custom_FF_replace_2.mux_latch GATE clk
+connect_clk *custom_FF_replace_1.mux_latch GATE clk_2
+
 
 set dfflibmap_args ""
 foreach cell $::env(DONT_USE_CELLS) {
