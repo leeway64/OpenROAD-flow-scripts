@@ -10,7 +10,7 @@ flow stages through Tcl commands and Python APIs.
 
 ## Running ORFS with two-phase clocking with latches
 
-````
+```
 make DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk .DEFAULT_GOAL=synth MODE=two_phase_clk | tee orfs.log
 ```
 
@@ -22,12 +22,12 @@ Inside `openroad`, run the following:
 source platforms/sky130hd/specify_files_for_sdc.tcl
 ```
 
+# The following sections refer to the the original OpenROAD repo
+
 ## Citing this Work
 
 If you use this software in any published work, we would appreciate a citation!
 Please use the following references:
-
-````
 
 @article{ajayi2019openroad,
 title={OpenROAD: Toward a Self-Driving, Open-Source Digital Layout Implementation Tool Chain},

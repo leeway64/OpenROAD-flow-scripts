@@ -162,11 +162,11 @@ proc convert_liberty_areas { } {
 }
 
 # Connect the clk_2 input to the second DFF cell in the pair
-proc connect_clk_2 {} {
+proc connect_clk {cell_name clk_port_name} {
     # Find all cells with a name ending in custom_FF_replace_2
     # Refer to this GitHub PR for more information on how to get the output of a Yosys command into a
     # Tcl variable: https://github.com/YosysHQ/yosys/pull/3349
-    tee -q -s cells_to_update_scratchpad select -list c:*custom_FF_replace_2*
+    tee -q -s cells_to_update_scratchpad select -list c:$cell_name
     set cells_to_update [scratchpad -copy cells_to_update_scratchpad result.string]
     set cells_to_update [split $cells_to_update \n]
 
@@ -184,7 +184,7 @@ proc connect_clk_2 {} {
 
     # Connect clk_2 to the clock port of each cell
     foreach cell $DFF_list {
-        connect -port $cell C clk_2
+        connect -port $cell C $clk_port_name
     }
 }
 

@@ -11,17 +11,25 @@ module \$_DFFE_PP_
     output Q
 );
 
+    wire mux_latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    (
+        .GATE(C),
+        .D(Q),
+        .Q(mux_latch_output)
+    );
+
     wire mux_output;
     sky130_fd_sc_hd__mux2_1 MUX
     (
-        .A0(Q),
+        .A0(mux_latch_output),
         .A1(D),
         .S(E),
         .X(mux_output)
     );
 
     // dlxtp only has a size of 1
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.main_latch (
         .GATE(C),
         .D(mux_output),
         .Q(Q)

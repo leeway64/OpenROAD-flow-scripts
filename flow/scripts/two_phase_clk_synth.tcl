@@ -90,7 +90,7 @@ opt -noff
 clean -purge
 
 puts "Connect the clk_2 input to the appropriate cells"
-connect_clk_2
+connect_clk *custom_FF_replace_2* clk_2
 
 design -save pre_retiming
 
