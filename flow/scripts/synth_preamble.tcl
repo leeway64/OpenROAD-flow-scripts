@@ -119,6 +119,7 @@ if { [env_var_exists_and_non_empty SDC_FILE_CLOCK_PERIOD] } {
   close $fp
 }
 
+puts "Add the \"-keepff\" flag to the abc_args variable"
 lappend abc_args -keepff
 
 # Create argument list for stat

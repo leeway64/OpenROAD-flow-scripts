@@ -2,7 +2,7 @@
 
 current_design riscv
 
-set clk_period 6.0
+set clk_period [expr 2 * 6.0]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 
@@ -14,7 +14,6 @@ set clk_2_fall [expr ($clk_period / 2) + ($clk_period * $duty_cycle)]
 set clk_1_waveform_list {}
 lappend clk_1_waveform_list $clk_1_rise
 lappend clk_1_waveform_list $clk_1_fall
-
 
 set clk_2_waveform_list {}
 lappend clk_2_waveform_list $clk_2_rise

@@ -2,7 +2,7 @@
 
 current_design aes_cipher_top
 
-set clk_period 4.5
+set clk_period [expr 2 * 4.5]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 

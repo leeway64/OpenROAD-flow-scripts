@@ -67,10 +67,18 @@ module \$_SDFFE_PN0P_
     output Q
 );
 
+    wire mux_latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    (
+        .GATE(C),
+        .D(Q),
+        .Q(mux_latch_output)
+    );
+
     wire mux_output_1;
     sky130_fd_sc_hd__mux2_1 MUX_1
     (
-        .A0(Q),
+        .A0(mux_latch_output),
         .A1(D),
         .S(E),
         .X(mux_output_1)
@@ -105,10 +113,18 @@ module \$_SDFFE_PP0P_
     output Q
 );
 
+    wire mux_latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    (
+        .GATE(C),
+        .D(Q),
+        .Q(mux_latch_output)
+    );
+
     wire mux_output_1;
     sky130_fd_sc_hd__mux2_1 MUX_1
     (
-        .A0(Q),
+        .A0(mux_latch_output),
         .A1(D),
         .S(E),
         .X(mux_output_1)
@@ -197,10 +213,18 @@ module \$_DFFE_PP0P_
     output Q
 );
 
+    wire mux_latch_output;
+    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    (
+        .GATE(C),
+        .D(Q),
+        .Q(mux_latch_output)
+    );
+
     wire mux_output;
     sky130_fd_sc_hd__mux2_1 MUX
     (
-        .A0(Q),
+        .A0(mux_latch_output),
         .A1(D),
         .S(E),
         .X(mux_output)

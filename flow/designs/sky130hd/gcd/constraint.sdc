@@ -2,7 +2,7 @@
 
 current_design gcd
 
-set clk_period [expr 2 * 1.1]
+set clk_period [expr 4 * 1.1]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 
@@ -28,7 +28,6 @@ set clk_1_port_name clk
 set clk_1_port [get_ports $clk_1_port_name]
 
 create_clock -name $clk_1_name -period $clk_period $clk_1_port -waveform $clk_1_waveform_list
-
 
 
 ############### Set up clock 2 ###############
@@ -57,7 +56,3 @@ set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name [all_output
 
 set_input_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name $non_clock_inputs
 set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name [all_outputs]
-
-
-set_max_time_borrow 0.5 $clk_1_name
-set_max_time_borrow 0.5 $clk_2_name
