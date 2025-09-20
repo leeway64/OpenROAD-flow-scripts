@@ -29,6 +29,7 @@ source platforms/sky130hd/specify_files_for_sdc.tcl
 If you use this software in any published work, we would appreciate a citation!
 Please use the following references:
 
+```
 @article{ajayi2019openroad,
 title={OpenROAD: Toward a Self-Driving, Open-Source Digital Layout Implementation Tool Chain},
 author={Ajayi, T and Blaauw, D and Chan, TB and Cheng, CK and Chhabria, VA and Choo, DK and Coltella, M and Dobre, S and Dreslinski, R and Foga{\c{c}}a, M and others},
@@ -36,14 +37,12 @@ journal={Proc. GOMACTECH},
 pages={1105--1110},
 year={2019}
 }
-
 ```
 
 A copy of this paper is available
 [here](http://people.ece.umn.edu/users/sachin/conf/gomactech19.pdf) (PDF).
 
 ```
-
 @inproceedings{ajayi2019toward,
 title={Toward an open-source digital flow: First learnings from the openroad project},
 author={Ajayi, Tutu and Chhabria, Vidya A and Foga{\c{c}}a, Mateus and Hashemi, Soheil and Hosny, Abdelrahman and Kahng, Andrew B and Kim, Minsoo and Lee, Jeongsup and Mallappa, Uday and Neseem, Marina and others},
@@ -51,7 +50,6 @@ booktitle={Proceedings of the 56th Annual Design Automation Conference 2019},
 pages={1--4},
 year={2019}
 }
-
 ```
 
 A copy of this paper is available
@@ -67,4 +65,3 @@ The flow relies on several tools, platforms and designs that each have their own
 - Find the tool license at: `OpenROAD-flow-scripts/tools/{tool}/` or `OpenROAD-flow-scripts/tools/OpenROAD/src/{tool}/`.
 - Find the platform license at: `OpenROAD-flow-scripts/flow/platforms/{platform}/`.
 - Find the design license at: `OpenROAD-flow-scripts/flow/designs/src/{design}/`.
-```

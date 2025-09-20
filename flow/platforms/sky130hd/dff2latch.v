@@ -1,5 +1,6 @@
-// This file converts a DFF that is used in one of the example designs into an 
-// "equivalent" latch
+// This file converts a DFF that is used in one of the example designs into an "equivalent" latch. This
+// file also adds an extra latch in the recirculation mux loop so that each latch is being fed by
+// another latch of the opposite clock.
 
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with positive polarity enable."
