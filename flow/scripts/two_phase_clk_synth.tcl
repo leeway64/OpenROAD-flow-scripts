@@ -94,10 +94,18 @@ puts "Connect the clk_2 input to the second DFF cell in each pair"
 # Find all cells with a name ending in custom_FF_replace_2
 connect_clk *custom_FF_replace_2 C clk_2
 
+techmap -map $::env(DFF_TRANSFORM_MAP_FILE)
+
+# Connect the latch in the recirculation mux loop to the correct clock. For example, a latch that is 
+# connected to clock 1 should have a recirculation mux latch be connected to clock 2, and vice versa.
+connect_clk *custom_FF_replace_2.mux_latch C clk
+connect_clk *custom_FF_replace_1.mux_latch C clk_2
+
+
 design -save pre_retiming
 
 puts "Perform retiming"
-abc -keepff -dff -script "+strash; zero; &get -n; print_latch; &fraig -x; &put; scorr; dc2; dretime -v; retime -M 4 -s -D 1 -o -v; strash; &get -n; &dch -f; &nf -D 1; &put"
+abc -keepff -dff -markgroups -script "+strash; zero; &get -n; print_latch; &fraig -x; &put; scorr; dc2; dretime -v; retime -M 4 -D 1 -o -v; strash; &get -n; &dch -f; &nf -D 1; &put"
 opt -noff -purge
 
 design -save post_retiming
@@ -126,14 +134,7 @@ if { [env_var_exists_and_non_empty LATCH_MAP_FILE] } {
 
 # puts "Replace each DFF with a corresponding latch"
 techmap -autoproc -map $::env(DFF_TO_LATCH_MAP_FILE)
-techmap
-flatten
 opt -noff
-
-# Connect the latch in the recirculation mux loop to the correct clock. For example, a latch that is 
-# connected to clock 1 should have a recirculation mux latch be connected to clock 2, and vice versa.
-connect_clk *custom_FF_replace_2.mux_latch GATE clk
-connect_clk *custom_FF_replace_1.mux_latch GATE clk_2
 
 
 set dfflibmap_args ""
