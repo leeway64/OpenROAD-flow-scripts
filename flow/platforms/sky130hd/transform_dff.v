@@ -185,7 +185,6 @@ module \$_SDFF_PP1_
 
 endmodule
 
-/*
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with positive polarity reset and positive polarity clock
 //      enable."
@@ -199,59 +198,27 @@ module \$_DFFE_PP0P_
 );
 
     wire mux_latch_output;
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    \$_DFF_P_ _TECHMAP_REPLACE_.mux_latch
     (
-        .GATE(C),
+        .C(C),
         .D(Q),
         .Q(mux_latch_output)
     );
 
     wire mux_output;
-    sky130_fd_sc_hd__mux2_1 MUX
+    \$_MUX_ MUX
     (
-        .A0(mux_latch_output),
-        .A1(D),
+        .A(mux_latch_output),
+        .B(D),
         .S(E),
-        .X(mux_output)
+        .Y(mux_output)
     );
 
-    wire reset;
-    sky130_fd_sc_hd__inv_1 INV (
-        .A(R),
-        .Y(inv_reset)
-    );
-
-    sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
-        .RESET_B(inv_reset),
+    \$_DFF_PP0_ _TECHMAP_REPLACE_ (
+        .C(C),
+        .R(R),
         .D(mux_output),
         .Q(Q)
     );
 
 endmodule
-
-// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
-//      "A positive edge D-type flip-flop with positive polarity reset."
-module \$_DFF_PP0_
-(
-    input D,
-    input C,
-    input R,
-    output Q
-);
-
-    wire inv_reset;
-    sky130_fd_sc_hd__inv_1 INV (
-        .A(R),
-        .Y(inv_reset)
-    );
-
-    sky130_fd_sc_hd__dlrtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
-        .RESET_B(inv_reset),
-        .D(D),
-        .Q(Q)
-    );
-
-endmodule
-*/
