@@ -37,7 +37,6 @@ set clk_2_port_name clk_2
 
 set clk_2_port [get_ports $clk_2_port_name]
 
-
 create_clock -name $clk_2_name -period $clk_period $clk_2_port -waveform $clk_2_waveform_list
 
 

@@ -202,7 +202,7 @@ proc check_logical_equivalence {top_module gold gate} {
     opt_clean -purge
 
     async2sync
-    equiv_simple -undef -short -seq 1 
+    equiv_simple -undef -short -seq 1
     equiv_induct -undef -seq 4
     equiv_status -assert
 
