@@ -39,25 +39,6 @@ module \$_DFFE_PP_
 
 endmodule
 
-/*
-// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
-//      "A positive edge D-type flip-flop."
-module \$_DFF_P_
-(
-    input D,
-    input C,
-    output Q
-);
-    // dlxtp only has 1 size
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_
-    (
-        .D(D),
-        .GATE(C),
-        .Q(Q)
-    );
-endmodule
-
-
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with negative polarity synchronous reset and positive 
 //      polarity clock enable (with reset having priority)".
@@ -71,33 +52,33 @@ module \$_SDFFE_PN0P_
 );
 
     wire mux_latch_output;
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    \$_DFF_P_ _TECHMAP_REPLACE_.mux_latch
     (
-        .GATE(C),
+        .C(C),
         .D(Q),
         .Q(mux_latch_output)
     );
 
     wire mux_output_1;
-    sky130_fd_sc_hd__mux2_1 MUX_1
+    \$_MUX_ MUX_1
     (
-        .A0(mux_latch_output),
-        .A1(D),
+        .A(mux_latch_output),
+        .B(D),
         .S(E),
-        .X(mux_output_1)
+        .Y(mux_output_1)
     );
 
     wire mux_output_2;
-    sky130_fd_sc_hd__mux2_1 MUX_2
+    \$_MUX_ MUX_2
     (
-        .A0(1'b0),
-        .A1(mux_output_1),
+        .A(1'b0),
+        .B(mux_output_1),
         .S(R),
-        .X(mux_output_2)
+        .Y(mux_output_2)
     );
     
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
+    \$_DFF_P_ _TECHMAP_REPLACE_ (
+        .C(C),
         .D(mux_output_2),
         .Q(Q)
     );
@@ -117,33 +98,33 @@ module \$_SDFFE_PP0P_
 );
 
     wire mux_latch_output;
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_.mux_latch
+    \$_DFF_P_ _TECHMAP_REPLACE_.mux_latch
     (
-        .GATE(C),
+        .C(C),
         .D(Q),
         .Q(mux_latch_output)
     );
 
     wire mux_output_1;
-    sky130_fd_sc_hd__mux2_1 MUX_1
+    \$_MUX_ MUX_1
     (
-        .A0(mux_latch_output),
-        .A1(D),
+        .A(mux_latch_output),
+        .B(D),
         .S(E),
-        .X(mux_output_1)
+        .Y(mux_output_1)
     );
 
     wire mux_output_2;
-    sky130_fd_sc_hd__mux2_1 MUX_2
+    \$_MUX_ MUX_2
     (
-        .A0(mux_output_1),
-        .A1(1'b0),
+        .A(mux_output_1),
+        .B(1'b0),
         .S(R),
-        .X(mux_output_2)
+        .Y(mux_output_2)
     );
     
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
+    \$_DFF_P_ _TECHMAP_REPLACE_ (
+        .C(C),
         .D(mux_output_2),
         .Q(Q)
     );
@@ -161,16 +142,16 @@ module \$_SDFF_PP0_
 );
 
     wire mux_output;
-    sky130_fd_sc_hd__mux2_1 MUX
+    \$_MUX_ MUX
     (
-        .A0(D),
-        .A1(1'b0),
+        .A(D),
+        .B(1'b0),
         .S(R),
-        .X(mux_output)
+        .Y(mux_output)
     );
 
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
+    \$_DFF_P_ _TECHMAP_REPLACE_ (
+        .C(C),
         .D(mux_output),
         .Q(Q)
     );
@@ -188,22 +169,23 @@ module \$_SDFF_PP1_
 );
 
     wire mux_output;
-    sky130_fd_sc_hd__mux2_1 MUX
+    \$_MUX_ MUX
     (
-        .A0(D),
-        .A1(1'b1),
+        .A(D),
+        .B(1'b1),
         .S(R),
-        .X(mux_output)
+        .Y(mux_output)
     );
 
-    sky130_fd_sc_hd__dlxtp_1 _TECHMAP_REPLACE_ (
-        .GATE(C),
+    \$_DFF_P_ _TECHMAP_REPLACE_ (
+        .C(C),
         .D(mux_output),
         .Q(Q)
     );
 
 endmodule
 
+/*
 // From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
 //      "A positive edge D-type flip-flop with positive polarity reset and positive polarity clock
 //      enable."

@@ -2,6 +2,8 @@
 // file also adds an extra latch in the recirculation mux loop so that each latch is being fed by
 // another latch of the opposite clock.
 
+// From https://github.com/YosysHQ/yosys/blob/main/techlibs/common/simcells.v:
+//      "A positive edge D-type flip-flop."
 module \$_DFF_P_
 (
     input D,
