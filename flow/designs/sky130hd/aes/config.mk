@@ -3,7 +3,7 @@ export DESIGN_NAME = aes_cipher_top
 export PLATFORM    = sky130hd
 
 export VERILOG_FILES = $(sort $(wildcard $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/*.v))
-export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/constraint.sdc
+export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/two_phase_clk_constraint.sdc
 
 export PLACE_PINS_ARGS = -min_distance 4 -min_distance_in_tracks
 

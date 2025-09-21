@@ -2,7 +2,7 @@ export DESIGN_NAME = gcd
 export PLATFORM    = sky130hd
 
 export VERILOG_FILES = $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/gcd.v
-export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/constraint.sdc
+export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/two_phase_clk_constraint.sdc
 
 # Adders degrade GCD
 export ADDER_MAP_FILE :=
