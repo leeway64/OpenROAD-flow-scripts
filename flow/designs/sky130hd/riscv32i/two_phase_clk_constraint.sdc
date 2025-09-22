@@ -2,7 +2,7 @@
 
 current_design riscv
 
-set clk_period [expr 2 * 6.0]
+set clk_period [expr 3 * 6.0]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 
