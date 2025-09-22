@@ -53,5 +53,5 @@ set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name [all_output
 
 ############### Set delays for clock 2 ###############
 
-set_input_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name $non_clock_inputs
-set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_2_name [all_outputs]
+set_input_delay [expr $clk_period * $clk_io_pct] -add_delay -clock $clk_2_name $non_clock_inputs
+set_output_delay [expr $clk_period * $clk_io_pct] -add_delay -clock $clk_2_name [all_outputs]
