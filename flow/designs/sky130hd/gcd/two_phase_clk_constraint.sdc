@@ -20,10 +20,20 @@ lappend clk_2_waveform_list $clk_2_rise
 lappend clk_2_waveform_list $clk_2_fall
 
 
+############### Set up default clock ###############
+
+set default_clk_name default_clk
+set default_clk_port_name clk
+
+set default_clk_port [get_ports $default_clk_port_name]
+
+create_clock -name $default_clk_name -period $clk_period $default_clk_port
+
+
 ############### Set up clock 1 ###############
 
-set clk_1_name clk
-set clk_1_port_name clk
+set clk_1_name clk_1
+set clk_1_port_name clk_1
 
 set clk_1_port [get_ports $clk_1_port_name]
 
@@ -45,13 +55,7 @@ create_clock -name $clk_2_name -period $clk_period $clk_2_port -waveform $clk_2_
 set non_clock_inputs [all_inputs -no_clocks]
 
 
-############### Set delays for clock 1 ###############
+############### Set input and output delays ###############
 
-set_input_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name $non_clock_inputs
-set_output_delay [expr $clk_period * $clk_io_pct] -clock $clk_1_name [all_outputs]
-
-
-############### Set delays for clock 2 ###############
-
-set_input_delay [expr $clk_period * $clk_io_pct] -add_delay -clock $clk_2_name $non_clock_inputs
-set_output_delay [expr $clk_period * $clk_io_pct] -add_delay -clock $clk_2_name [all_outputs]
+set_input_delay [expr $clk_period * $clk_io_pct] -clock $default_clk_name $non_clock_inputs
+set_output_delay [expr $clk_period * $clk_io_pct] -clock $default_clk_name [all_outputs]
