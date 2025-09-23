@@ -6,10 +6,10 @@ set clk_period [expr 2 * 4.5]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 
-set clk_1_rise 0.0
-set clk_1_fall [expr {$clk_period * $duty_cycle}]
-set clk_2_rise [expr {$clk_period / 2}]
-set clk_2_fall [expr ($clk_period / 2) + ($clk_period * $duty_cycle)]
+set clk_1_rise [expr {$clk_period / 2}]
+set clk_1_fall [expr {$clk_period * $duty_cycle} + {$clk_period / 2}]
+set clk_2_rise [expr {$clk_period / 2} + {$clk_period / 2}]
+set clk_2_fall [expr ($clk_period / 2) + ($clk_period * $duty_cycle) + {$clk_period / 2}]
 
 set clk_1_waveform_list {}
 lappend clk_1_waveform_list $clk_1_rise
@@ -23,11 +23,8 @@ lappend clk_2_waveform_list $clk_2_fall
 ############### Set up default clock ###############
 
 set default_clk_name default_clk
-set default_clk_port_name clk
 
-set default_clk_port [get_ports $default_clk_port_name]
-
-create_clock -name $default_clk_name -period $clk_period $default_clk_port
+create_clock -name $default_clk_name -period $clk_period
 
 
 ############### Set up clock 1 ###############
