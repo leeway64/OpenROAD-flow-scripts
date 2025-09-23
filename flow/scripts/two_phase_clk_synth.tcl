@@ -3,6 +3,11 @@ read_checkpoint $::env(RESULTS_DIR)/1_1_yosys_canonicalize.rtlil
 
 hierarchy -check -top $::env(DESIGN_NAME)
 
+puts "Rename the clk input to clk_1"
+yosys cd $::env(DESIGN_NAME)
+yosys rename clk clk_1
+yosys cd
+
 if { [env_var_equals SYNTH_GUT 1] } {
   # /deletes all cells at the top level, which will quickly optimize away
   # everything else, including macros.
@@ -98,7 +103,7 @@ techmap -map $::env(DFF_TRANSFORM_MAP_FILE)
 
 # Connect the latch in the recirculation mux loop to the correct clock. For example, a latch that is 
 # connected to clock 1 should have a recirculation mux latch be connected to clock 2, and vice versa.
-connect_clk *custom_FF_replace_2.mux_latch C clk
+connect_clk *custom_FF_replace_2.mux_latch C clk_1
 connect_clk *custom_FF_replace_1.mux_latch C clk_2
 
 
