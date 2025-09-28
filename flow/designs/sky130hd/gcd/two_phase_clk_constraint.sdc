@@ -6,10 +6,10 @@ set clk_period [expr 3 * 1.1]
 set clk_io_pct 0.2
 set duty_cycle 0.4
 
-set clk_1_rise [expr {$clk_period / 2}]
-set clk_1_fall [expr {$clk_period * $duty_cycle} + {$clk_period / 2}]
-set clk_2_rise [expr {$clk_period / 2} + {$clk_period / 2}]
-set clk_2_fall [expr ($clk_period / 2) + ($clk_period * $duty_cycle) + {$clk_period / 2}]
+set clk_1_rise 0.0
+set clk_1_fall [expr {$clk_period * $duty_cycle}]
+set clk_2_rise [expr {$clk_period / 2}]
+set clk_2_fall [expr ($clk_period / 2) + ($clk_period * $duty_cycle)]
 
 set clk_1_waveform_list {}
 lappend clk_1_waveform_list $clk_1_rise
@@ -56,3 +56,12 @@ set non_clock_inputs [all_inputs -no_clocks]
 
 set_input_delay [expr $clk_period * $clk_io_pct] -clock $default_clk_name $non_clock_inputs
 set_output_delay [expr $clk_period * $clk_io_pct] -clock $default_clk_name [all_outputs]
+
+
+############### Set up constraints for setup and hold checks ###############
+
+set_multicycle_path 2 -setup -from [get_clocks $default_clk_name] -to [get_clocks $clk_1_name]
+set_multicycle_path 2 -setup -from [get_clocks $clk_2_name] -to [get_clocks $default_clk_name]
+
+set_multicycle_path 1 -hold -from [get_clocks $default_clk_name] -to [get_clocks $clk_1_name]
+set_multicycle_path 1 -hold -from [get_clocks $clk_2_name] -to [get_clocks $default_clk_name]
